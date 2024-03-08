@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0",
+            "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "basic_sort_HW6"
+version = "1.0.0"
+authors = [{ name="Tristan Cilley", email="tristan.cilley@maine.edu" },
+           { name="Maha Fazhil", email="maha.fazli@maine.edu" },
+           { name="Nick Sarno", email="nicole.sarno@maine.edu" },
+           { name="Allison Lupien", email="allison.lupien@maine.edu" },
+           { name="Jacob Michaud", email="jacob.michaud3@maine.edu" },
+]
+description = "An exercise in the capstone course"
+readme = "README.md"
+requires-python = ">=3.9.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache 2.0",
+    "Operating System :: OS Independent",
+]
+
+[tool.setuptools]
+packages = ["basic_sort", "basic_sort_test"]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/pypa/python_package_exercise/issues"
