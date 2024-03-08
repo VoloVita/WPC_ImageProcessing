@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from basic_sort.int_sort import bubble, quick, insertion
+from src.int_sort import bubble, quick, insertion
 
 
 def is_sorted(int_list):
