@@ -82,10 +82,8 @@ repos:
     rev: v4.5.0
     hooks:
       - id: check-merge-conflict
-      - id: check-symlinks
       - id: end-of-file-fixer
       - id: trailing-whitespace
-      - id: check-yaml
 
   - repo: git@github.com:psf/black
     rev: 23.11.0

@@ -75,4 +75,5 @@ def insertion(int_list):
             j -= 1
 
         int_list[j + 1] = key
+
     return int_list
