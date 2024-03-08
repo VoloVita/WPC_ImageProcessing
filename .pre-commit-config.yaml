@@ -1,0 +1,99 @@
+# This is a pre-commit YAML file for WPC_ImageProcessing project
+
+# ------------------------------------------------------------------------------
+# To setup pre-commit hooks, you will need the pre-commit tool. This tool is a
+# framework for managing and maintaining multi-language pre-commit hooks.
+
+# Here is a link to the website for the pre-commit tool: https://pre-commit.com/
+
+# If you don't have the pre-commit tool:
+
+# MacOS: use Homebrew to install it
+#   brew install pre-commit
+#   (homebrew automatically creates the .git/hooks directory for you)
+
+# Windows: install using python's package manager called pip
+#   pip install pre-commit
+#   OR
+#   pip3 install pre-commit
+
+
+# Here's how this all works:
+
+# 1.) You write a pre-commit-config.yml file.
+# 2.) You save that file to the root directory of your repository
+# 3.) Open that root directory in Terminal or Command Prompt
+# 4.) type: pre-commit install
+#	This is a one-time setup process that ensures your configured hooks are
+#	activated and will be automatically executed before each commit. After
+#	this setup, you don't need to run pre-commit install again unless you want
+#	to update or modify your hooks configuration.
+
+# What did you just do?
+
+# You wrote a pre-commit-config.yml file. Then, you ran the pre-commit tool which
+# created an executable file in the .git/hooks directory. Now, when you make a
+# commit, all the files in that .git/hooks directory are run automatically.
+# ------------------------------------------------------------------------------
+
+# This code contains lots of hooks so lets break it down:
+
+# check-merge-conflict
+# This hook checks for files that contain merge conflict markers
+# (<<<<<<<, =======, >>>>>>>). It helps to prevent accidental commits with
+# unresolved merge conflicts.
+
+# check-symlinks
+# This hook checks for the presence of symbolic links. It ensures that symbolic
+# links are not accidentally committed, which can cause issues in version
+# control systems.
+
+# end-of-file-fixer
+# This hook ensures that all files end with a newline character. It's a common
+# convention to have a newline at the end of files.
+
+# trailing-whitespace
+# This hook checks for and removes trailing whitespaces at the end of lines.
+# Trailing whitespaces can sometimes introduce subtle issues and are generally
+# considered undesirable.
+
+# check-yaml
+# This hook checks YAML files for syntax errors. It helps ensure that YAML files
+# in the repository are well-formed.
+
+# check-added-large-files
+# This hook checks for large files that are being added in the commit. The args
+# parameter is used to specify the maximum allowed size (in kilobytes).
+
+# black
+# This hook uses the Black code formatter to automatically format Python code.
+# It helps maintain consistent code style.
+
+# flake8
+# This hook uses Flake8, a linting tool for Python code. It checks for coding
+# standards and potential errors in the Python code.
+
+# detect-aws-credentials
+# This hook checks for the presence of AWS credentials and private keys in the
+# codebase. It helps prevent accidentally committing sensitive information.
+
+repos:
+  - repo: git@github.com:pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+
+  - repo: git@github.com:psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  - repo: git@github.com:PyCQA/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
