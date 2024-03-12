@@ -19,7 +19,7 @@ def int_test_dict():
     return {
         "reverse-list": [3, 2, 1],
         "uniform-list": [1, 1, 1],
-        "already-sorted": [1, 4, 8, 34, 65, 73, 109],
+        "already-sorted": [-30. -4, 4, 8, 34, 65, 73, 109],
         "random-ints": np.random.randint(low=-10, high=200, size=5),
         "positive-ints": [9, 6, 95, 83, 4, 2, 34],
         "negative-list": [-2, -8, -1, -64, -43, -38],
