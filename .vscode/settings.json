@@ -9,7 +9,10 @@
         "cmap",
         "colorbar",
         "Downsample",
-        "imshow"
+        "figsize",
+        "imshow",
+        "sitk",
+        "skimage"
     ],
 
 }

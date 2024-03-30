@@ -3,7 +3,7 @@ This module contains common utilities for image processing.
 """
 
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 import cv2
 import matplotlib.pyplot as plt
@@ -57,7 +57,7 @@ def rgb_to_gray(img: NDArray, kernel: Optional[NDArray] = None) -> NDArray:
     return gray
 
 
-def print_image(img: NDArray, axis: bool = False, color_bar: bool = False) -> None:
+def print_image(img: NDArray, axis: bool = False, figsize=(10, 6)) -> None:
     """
     Plots/prints the image
 
@@ -70,14 +70,43 @@ def print_image(img: NDArray, axis: bool = False, color_bar: bool = False) -> No
     # Downsample the image
     w, h = img.shape[0], img.shape[1]
 
-    if h > 2000 or w > 2000:
-        new_w = int(w // (h / 2000))
-        img = cv2.resize(img, (2000, new_w), interpolation=cv2.INTER_AREA)
+    size = 2000
 
+    if h > size or w > size:
+        new_w = int(w // (h / size))
+        img = cv2.resize(img, (size, new_w), interpolation=cv2.INTER_AREA)
+
+    plt.figure(figsize=figsize)
     plt.imshow(img, cmap="gray")
 
     if not axis:
         plt.axis("off")
 
-    if color_bar:
-        plt.colorbar()
+
+def print_images(imgs: List[NDArray], axis: bool = False, figsize=(15, 10)) -> None:
+    """
+    Plots/prints the images in a row across the screen
+
+    Args:
+        img (List[NDArray]): Input images
+        axis (bool, optional): Print axis or not. Defaults to False.
+        color_bar (bool, optional): Print a color bar or not. Defaults to False.
+    """
+    size = 2000
+
+    fig, axs = plt.subplots(1, len(imgs), figsize=figsize)
+
+    for i, img in enumerate(imgs):
+        # Downsample the image
+        w, h = img.shape[0], img.shape[1]
+
+        if h > size or w > size:
+            new_w = int(w // (h / size))
+            img = cv2.resize(img, (size, new_w), interpolation=cv2.INTER_AREA)
+
+        # Plot the image
+        axs[i].imshow(img, cmap="gray")
+
+        # Adjust image settings
+        if not axis:
+            axs[i].axis("off")
