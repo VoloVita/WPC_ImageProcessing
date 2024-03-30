@@ -1,0 +1,10 @@
+{
+    "python.terminal.activateEnvironment": true,
+    "python.defaultInterpreterPath": "~/miniconda3/envs/wpc/bin/python3",
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.autoImportCompletions": false,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+
+}
