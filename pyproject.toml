@@ -1,2 +1,10 @@
 [tool.flake8]
 max-line-length = 88
+
+[tool.pylint]
+# Pylint configs
+
+[tool.pylint.messages_control]
+disable = [
+    "E1101",
+]
