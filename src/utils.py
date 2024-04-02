@@ -22,11 +22,11 @@ def read_image(relative_dir: str) -> Optional[NDArray]:
     Returns:
         Optional[NDArray]: Output image
     """
-
+    # Create a full file path for the image using the relative path passed to the image.
     full_path = Path.cwd().parent / Path(relative_dir)
-    img = cv2.imread(str(full_path), cv2.IMREAD_COLOR).astype(np.float32)[
-        :, :, [2, 1, 0]
-    ]
+    # Using full path, read in color image as dtype float32.
+    img = cv2.imread(str(full_path), cv2.IMREAD_COLOR).astype(np.float32)[:, :, [2, 1, 0]]
+    # Normalize the pixel intensity of the image
     img = img / np.max(img)
     return img
 
@@ -43,16 +43,17 @@ def rgb_to_gray(img: NDArray, kernel: Optional[NDArray] = None) -> NDArray:
     Returns:
         NDArray: Grayscale image array
     """
-
+    # If no Channel weights argument is passed...
     if kernel is None:
         kernel = np.array([1, 1, 1], dtype=np.float32)
-
+    # Check datatype and shape of both img and kernel .
     assert img.dtype == np.float32, "Array is not of dtype float32"
     assert kernel.dtype == np.float32, "Kernel is not of dtype float32"
     assert len(img.shape) == 3, "Image must have dimensionality of 3"
     assert len(kernel.shape) == 1, "Kernel must have dimensionality of 1"
-
+    # Dot Product of pixel RGB values and Chanel weights
     gray = np.dot(img, kernel)
+    # normalize pixel intensity
     gray = gray / np.max(gray)
     return gray
 
@@ -69,10 +70,11 @@ def print_image(img: NDArray, axis: bool = False, figsize=(10, 6)) -> None:
 
     # Downsample the image
     w, h = img.shape[0], img.shape[1]
-
+    # max dimension is 2000 pixels
     size = 2000
-
+    # if image exceeds max dimension...
     if h > size or w > size:
+        # resize
         new_w = int(w // (h / size))
         img = cv2.resize(img, (size, new_w), interpolation=cv2.INTER_AREA)
 

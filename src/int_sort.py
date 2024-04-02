@@ -1,9 +1,12 @@
+from typeguard import typechecked
+
 """
 This module sorts lists of integers...
 """
 
 
-def bubble(int_list):
+@typechecked
+def bubble(int_list: list[int]):
     """
     Sorts a list in ascending order using the Bubble Sort algorithm.
 
@@ -24,7 +27,8 @@ def bubble(int_list):
     return int_list
 
 
-def quick(int_list):
+@typechecked
+def quick(int_list: list[int]):
     """
     Sorts a list using the quicksort algorithm.
 
@@ -53,7 +57,8 @@ def quick(int_list):
         return int_list
 
 
-def insertion(int_list):
+@typechecked
+def insertion(int_list: list[int]):
     """
     Sorts a list in ascending order using the Insertion Sort algorithm.
 
