@@ -57,7 +57,13 @@ def rgb_to_gray(img: NDArray, kernel: Optional[NDArray] = None) -> NDArray:
     return gray
 
 
-def print_image(img: NDArray, axis: bool = False, figsize=(10, 6)) -> None:
+def print_image(
+    img: NDArray,
+    axis: bool = False,
+    figsize=(10, 6),
+    color_bar: bool = False,
+    color_scale: str = "gray",
+) -> None:
     """
     Plots/prints the image
 
@@ -65,6 +71,7 @@ def print_image(img: NDArray, axis: bool = False, figsize=(10, 6)) -> None:
         img (NDArray): Input image
         axis (bool, optional): Print axis or not. Defaults to False.
         color_bar (bool, optional): Print a color bar or not. Defaults to False.
+        color_scale (str, optional): Colormap for grayscale images, defaults to "gray".
     """
 
     # Downsample the image
@@ -77,13 +84,22 @@ def print_image(img: NDArray, axis: bool = False, figsize=(10, 6)) -> None:
         img = cv2.resize(img, (size, new_w), interpolation=cv2.INTER_AREA)
 
     plt.figure(figsize=figsize)
-    plt.imshow(img, cmap="gray")
+    plt.imshow(img, cmap=color_scale)
 
     if not axis:
         plt.axis("off")
 
+    if color_bar:
+        plt.colorbar()
 
-def print_images(imgs: List[NDArray], axis: bool = False, figsize=(15, 10)) -> None:
+
+def print_images(
+    imgs: List[NDArray],
+    axis: bool = False,
+    figsize=(15, 10),
+    color_bar: bool = False,
+    color_scale: str = "gray",
+) -> None:
     """
     Plots/prints the images in a row across the screen
 
@@ -91,6 +107,7 @@ def print_images(imgs: List[NDArray], axis: bool = False, figsize=(15, 10)) -> N
         img (List[NDArray]): Input images
         axis (bool, optional): Print axis or not. Defaults to False.
         color_bar (bool, optional): Print a color bar or not. Defaults to False.
+        color_scale (str, optional): Colormap for grayscale images, defaults to "gray".
     """
     size = 2000
 
@@ -110,3 +127,6 @@ def print_images(imgs: List[NDArray], axis: bool = False, figsize=(15, 10)) -> N
         # Adjust image settings
         if not axis:
             axs[i].axis("off")
+
+        if color_bar:
+            axs[i].colorbar()
