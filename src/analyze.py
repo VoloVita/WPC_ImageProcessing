@@ -45,13 +45,16 @@ def check_path(path: str) -> Path:
     return results_path
 
 
-def new_remove_background():
+def remove_background(img: NDArray) -> NDArray:
+    """
+    Returns np array mask of the specimen.  With specimen 1 and background 0 in uint16 format.
+    """
     channel_letter = args.background_channel
     binary_color = args.binary_color
     path = img_path
     threshold = args.threshold
 
-    img_color = utils.read_image(path)
+    img_color = img
     img_gray = utils.rgb_to_gray(img_color)
 
     rgb_channels = {"R": 0, "G": 1, "B": 2}
@@ -95,19 +98,10 @@ def new_remove_background():
 
     eroded_image = erode_filter.Execute(closed_image)
 
-    # Applies a binary mask to the color image, removing background
-    color_image = sitk.GetImageFromArray(img_color, isVector=True)
-    mask_image = eroded_image
+    eroded_image_np = sitk.GetArrayFromImage(eroded_image)
+    eroded_image_np = np.expand_dims(eroded_image_np, axis=-1)
 
-    binary_mask = sitk.BinaryThreshold(
-        mask_image, lowerThreshold=1, upperThreshold=255, insideValue=1, outsideValue=0
-    )
-
-    mask_filter = sitk.MaskImageFilter()
-    mask_filter.SetMaskingValue(0)
-    masked_color_image = mask_filter.Execute(color_image, binary_mask)
-
-    return sitk.GetArrayFromImage(masked_color_image)
+    return eroded_image_np
 
 
 def find_fibers(img: NDArray) -> NDArray:
@@ -116,9 +110,31 @@ def find_fibers(img: NDArray) -> NDArray:
 
     print("Running Otsu on hue channel")
     thresh = skimage.filters.threshold_otsu(hue)
-    hue_otsu = (hue < thresh).astype(np.uint8)
+    hue_otsu = (hue > thresh).astype(np.uint8)
 
     return np.expand_dims(hue_otsu, axis=-1)
+
+
+def save_heatmap(
+    fiber_mask: NDArray, background_mask: NDArray, path: Path, sigma: int = 20
+) -> None:
+    """
+    Create a heatmap from a grayscale image and save it to disk.
+    """
+
+    # Apply blur
+    fiber_mask_float = fiber_mask.astype(np.float32)
+    heat_map = skimage.filters.gaussian(fiber_mask_float, sigma=20)
+    heat_map_u8 = (heat_map * 255).astype(np.uint8)
+
+    # Change to color space
+    heat_map_colored = cv2.applyColorMap(heat_map_u8, cv2.COLORMAP_HOT)
+
+    # Apply background mask
+    heat_map_colored = heat_map_colored * background_mask
+
+    # Save temperature map to disk
+    save_img(path, heat_map_colored)
 
 
 def save_img(path: Path, img: NDArray) -> None:
@@ -168,22 +184,36 @@ if __name__ == "__main__":
 
     results_path = check_path(img_path)
 
-    # Remove background
-    print("Removing background from image")
-    img_color_no_background = new_remove_background()
+    # Read the image from disk
+    img = utils.read_image(img_path)
 
-    # Save without background to disk
-    img_no_bg_path = results_path / "img_color_no_background.tif"
-    print(f"\nSaving image without background to disk: {img_no_bg_path}")
-    save_img(img_no_bg_path, img_color_no_background)
+    # Remove background
+    print("Finding background mask")
+    background_mask = remove_background(img)
+
+    # Save background mask to disk
+    background_mask_path = results_path / "background_mask.tif"
+    print(f"\nSaving background mask to disk: {background_mask_path}")
+    save_img(background_mask_path, background_mask)
 
     # Finding fibers
     print("\nFinding fibers in image")
-    fiber_img = find_fibers(img_color_no_background)
+    fiber_mask = find_fibers(img)
+    fiber_mask = fiber_mask * background_mask
 
     # Save fiber mask to disk
     fiber_mask_pth = results_path / "fiber_mask.tif"
-    print(f"\n\nSaving image without background to disk: {img_no_bg_path}")
-    save_img(fiber_mask_pth, fiber_img)
+    print(f"\n\nSaving image without background to disk: {fiber_mask_pth}")
+    save_img(fiber_mask_pth, fiber_mask)
 
-    breakpoint()
+    # Create heatmap
+    print("\nCreating heatmap 1")
+    save_heatmap(fiber_mask, background_mask, results_path / "heatmap_5.tif", sigma=5)
+
+    # Create heatmap
+    print("\nCreating heatmap 2")
+    save_heatmap(fiber_mask, background_mask, results_path / "heatmap_10.tif", sigma=10)
+
+    # Create heatmap
+    print("\nCreating heatmap 3")
+    save_heatmap(fiber_mask, background_mask, results_path / "heatmap_20.tif", sigma=20)
